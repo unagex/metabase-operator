@@ -1,0 +1,27 @@
+# permissions for end users to view metabases.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: metabase-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: metabase-operator
+    app.kubernetes.io/part-of: metabase-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: metabase-viewer-role
+rules:
+- apiGroups:
+  - unagex.com
+  resources:
+  - metabases
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - unagex.com
+  resources:
+  - metabases/status
+  verbs:
+  - get
