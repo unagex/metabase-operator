@@ -1,0 +1,5 @@
+apiVersion: unagex.com/v1
+kind: Metabase
+metadata:
+  name: metabase-sample
+spec:
