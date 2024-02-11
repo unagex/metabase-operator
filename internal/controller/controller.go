@@ -18,12 +18,15 @@ package controller
 
 import (
 	"context"
+	"fmt"
 
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	"github.com/go-logr/logr"
 	unagexcomv1 "github.com/unagex/metabase-operator/api/v1"
 )
 
@@ -31,25 +34,25 @@ import (
 type MetabaseReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+	Log    logr.Logger
 }
 
-//+kubebuilder:rbac:groups=unagex.com,resources=metabases,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=unagex.com,resources=metabases/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=unagex.com,resources=metabases/finalizers,verbs=update
-
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the Metabase object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.15.0/pkg/reconcile
 func (r *MetabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	r.Log = log.FromContext(ctx).WithName("Reconciler")
 
-	// TODO(user): your logic here
+	metabase := &unagexcomv1.Metabase{}
+	err := r.Get(ctx, req.NamespacedName, metabase)
+	if k8serrors.IsNotFound(err) {
+		return ctrl.Result{}, nil
+	}
+	if err != nil {
+		return ctrl.Result{}, fmt.Errorf("error getting metabase cr: %w", err)
+	}
+
+	err = r.ManageMetabase(ctx, metabase)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }
