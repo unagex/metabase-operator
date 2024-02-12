@@ -54,7 +54,12 @@ func (r *MetabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, err
 	}
 
-	err = r.ManageService(ctx, metabase)
+	err = r.ManageServices(ctx, metabase)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	err = r.ManageDatabase(ctx, metabase)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
