@@ -45,7 +45,7 @@ func (r *MetabaseReconciler) ManageMetabase(ctx context.Context, metabase *unage
 }
 
 func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *appsv1.Deployment {
-	ls := common.GetLabels(metabase.Name)
+	ls := common.GetLabels(metabase.Name, "metabase")
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      metabase.Name,
