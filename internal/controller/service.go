@@ -9,6 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	controllerruntime "sigs.k8s.io/controller-runtime"
 
 	unagexcomv1 "github.com/unagex/metabase-operator/api/v1"
 	"github.com/unagex/metabase-operator/internal/controller/common"
@@ -56,6 +57,7 @@ func (r *MetabaseReconciler) GetServiceHTTP(metabase *unagexcomv1.Metabase) *cor
 			},
 		},
 	}
+	_ = controllerruntime.SetControllerReference(metabase, svc, r.Scheme)
 
 	return svc
 }
