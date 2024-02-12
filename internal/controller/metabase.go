@@ -72,6 +72,32 @@ func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *apps
 									ContainerPort: 3000,
 								},
 							},
+							Env: []corev1.EnvVar{
+								{
+									Name:  "MB_DB_TYPE",
+									Value: "postgres",
+								},
+								{
+									Name:  "MB_DB_DBNAME",
+									Value: "metabaseappdb",
+								},
+								{
+									Name:  "MB_DB_PORT",
+									Value: "5432",
+								},
+								{
+									Name:  "MB_DB_USER",
+									Value: "user",
+								},
+								{
+									Name:  "MB_DB_PASS",
+									Value: "password",
+								},
+								{
+									Name:  "MB_DB_HOST",
+									Value: "update-host",
+								},
+							},
 						},
 					},
 				},
