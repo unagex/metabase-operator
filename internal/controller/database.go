@@ -115,24 +115,23 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 }
 
 func (r *MetabaseReconciler) getVCTs(metabase *unagexcomv1.Metabase) []corev1.PersistentVolumeClaim {
-	vcts := []corev1.PersistentVolumeClaim{
-		{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: metabase.Name + "-storage",
-			},
-			Spec: corev1.PersistentVolumeClaimSpec{
-				// TODO: fill this spec
-				AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
-				Resources: corev1.ResourceRequirements{
-					Requests: corev1.ResourceList{
-						// TODO: Resize would be possible depending on the cloud provider.
-						corev1.ResourceStorage: resource.MustParse("1Gi"),
-					},
+	vct := &corev1.PersistentVolumeClaim{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      metabase.Name + "-storage",
+			Namespace: metabase.Namespace,
+		},
+		Spec: corev1.PersistentVolumeClaimSpec{
+			// TODO: fill this spec
+			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+			Resources: corev1.ResourceRequirements{
+				Requests: corev1.ResourceList{
+					// TODO: Resize would be possible depending on the cloud provider.
+					corev1.ResourceStorage: resource.MustParse("1Gi"),
 				},
 			},
 		},
 	}
-	_ = controllerruntime.SetControllerReference(metabase, &vcts[0], r.Scheme)
+	_ = controllerruntime.SetControllerReference(metabase, vct, r.Scheme)
 
-	return vcts
+	return []corev1.PersistentVolumeClaim{*vct}
 }
