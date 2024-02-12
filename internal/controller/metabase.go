@@ -95,7 +95,12 @@ func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *apps
 								},
 								{
 									Name:  "MB_DB_HOST",
-									Value: "update-host",
+									Value: fmt.Sprintf("%s.%s.svc.cluster.local", metabase.Name+"-psql", metabase.Namespace),
+								},
+								{
+									// TODO: make this var dynamic
+									Name:  "JAVA_TIMEZONE",
+									Value: "US/Pacific",
 								},
 							},
 						},
