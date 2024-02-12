@@ -82,6 +82,25 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 									ContainerPort: 5432,
 								},
 							},
+							ReadinessProbe: &corev1.Probe{
+								ProbeHandler: corev1.ProbeHandler{
+									Exec: &corev1.ExecAction{
+										Command: []string{
+											"/bin/sh", "-c", fmt.Sprintf("pg_isready -U %s -d %s -q", "user", "metabaseappdb"),
+										},
+									},
+								},
+							},
+							LivenessProbe: &corev1.Probe{
+								FailureThreshold: 6,
+								ProbeHandler: corev1.ProbeHandler{
+									Exec: &corev1.ExecAction{
+										Command: []string{
+											"/bin/sh", "-c", fmt.Sprintf("pg_isready -U %s -d %s -q", "user", "metabaseappdb"),
+										},
+									},
+								},
+							},
 							Env: []corev1.EnvVar{
 								{
 									Name:  "POSTGRES_USER",
