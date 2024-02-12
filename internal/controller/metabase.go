@@ -78,12 +78,12 @@ func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *apps
 									Value: "postgres",
 								},
 								{
-									Name:  "MB_DB_DBNAME",
-									Value: "metabaseappdb",
-								},
-								{
 									Name:  "MB_DB_PORT",
 									Value: "5432",
+								},
+								{
+									Name:  "MB_DB_DBNAME",
+									Value: "metabaseappdb",
 								},
 								{
 									Name:  "MB_DB_USER",
