@@ -77,6 +77,7 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 							Image:           metabase.Spec.DB.Image,
 							ImagePullPolicy: metabase.Spec.DB.ImagePullPolicy,
 							Name:            metabase.Name,
+							Resources:       metabase.Spec.DB.Resources,
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "psql",

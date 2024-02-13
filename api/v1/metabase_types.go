@@ -27,7 +27,29 @@ type MetabaseSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// +kubebuilder:validation:Required
+	Metabase MetabasePodSpec `json:"metabase"`
+
+	// +kubebuilder:validation:Required
 	DB DBSpec `json:"db"`
+}
+
+type MetabasePodSpec struct {
+	// The image name to use for Metabase container.
+	// +kubebuilder:default="metabase/metabase:latest"
+	// +kubebuilder:validation:Optional
+	Image string `json:"image,omitempty"`
+
+	// ImagePullPolicy is used to determine when Kubernetes will attempt to
+	// pull (download) container images.
+	// +kubebuilder:validation:Enum={Always,Never,IfNotPresent}
+	// +kubebuilder:default="IfNotPresent"
+	// +kubebuilder:validation:Optional
+	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy,omitempty"`
+
+	// Resources of the metabase container.
+	// +kubebuilder:default={requests:{cpu: "1", memory: "2Gi"}, limits:{cpu: "1", memory: "2Gi"}}
+	// +kubebuilder:validation:Optional
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type DBSpec struct {
@@ -48,6 +70,11 @@ type DBSpec struct {
 	// +kubebuilder:default=1
 	// +kubebuilder:validation:Optional
 	Replicas *int32 `json:"replicas,omitempty"`
+
+	// Resources of the PostgreSQL container.
+	// +kubebuilder:default={requests:{cpu: "100m", memory: "256Mi"}, limits:{cpu: "1", memory: "2Gi"}}
+	// +kubebuilder:validation:Optional
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 
 	// +kubebuilder:validation:Required
 	Volume VolumeSpec `json:"volume"`

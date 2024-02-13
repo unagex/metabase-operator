@@ -8,7 +8,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 
@@ -66,14 +65,10 @@ func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *apps
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Image: "metabase/metabase:latest",
-							Name:  "metabase",
-							Resources: corev1.ResourceRequirements{
-								Requests: corev1.ResourceList{
-									corev1.ResourceMemory: resource.MustParse("2Gi"),
-									corev1.ResourceCPU:    resource.MustParse("2"),
-								},
-							},
+							Image:           metabase.Spec.Metabase.Image,
+							ImagePullPolicy: metabase.Spec.Metabase.ImagePullPolicy,
+							Name:            "metabase",
+							Resources:       metabase.Spec.Metabase.Resources,
 							StartupProbe: &corev1.Probe{
 								// 80 * 10 = 800 seconds for the pod before being restarted
 								FailureThreshold: 80,

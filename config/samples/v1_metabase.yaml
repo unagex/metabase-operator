@@ -3,10 +3,21 @@ kind: Metabase
 metadata:
   name: metabase-sample
 spec:
+  metabase:
+    # image: "metabase/metabase:latest"
+    # imagePullPolicy: "IfNotPresent"
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi
   db:
     # image: "postgres:latest"
     # imagePullPolicy: "IfNotPresent"
     # replicas: 1
+    # resources:
+    #   requests:
+    #     cpu: 1
+    #     memory: 2Gi
     volume:
       # storageClassName: standard
       size: 10Gi
