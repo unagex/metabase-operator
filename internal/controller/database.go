@@ -12,7 +12,6 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/utils/ptr"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 )
 
@@ -52,7 +51,8 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 			Labels:    ls,
 		},
 		Spec: appsv1.StatefulSetSpec{
-			Replicas: ptr.To[int32](1),
+			// Only one replicas of metabase is allowed at the moment.
+			Replicas: metabase.Spec.DB.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: ls,
 			},
@@ -74,8 +74,9 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 					},
 					Containers: []corev1.Container{
 						{
-							Image: "postgres:latest",
-							Name:  metabase.Name,
+							Image:           metabase.Spec.DB.Image,
+							ImagePullPolicy: metabase.Spec.DB.ImagePullPolicy,
+							Name:            metabase.Name,
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "psql",
@@ -134,18 +135,19 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 }
 
 func (r *MetabaseReconciler) getVCTs(metabase *unagexcomv1.Metabase) []corev1.PersistentVolumeClaim {
+	r.Log.Info("the value is")
+	r.Log.Info(fmt.Sprintf("%+v", metabase.Spec))
 	vct := &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      metabase.Name + "-storage",
 			Namespace: metabase.Namespace,
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
-			// TODO: fill this spec
-			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+			AccessModes:      []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+			StorageClassName: metabase.Spec.DB.Volume.StorageClassName,
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
-					// TODO: Resize would be possible depending on the cloud provider.
-					corev1.ResourceStorage: resource.MustParse("1Gi"),
+					corev1.ResourceStorage: resource.MustParse(metabase.Spec.DB.Volume.Size),
 				},
 			},
 		},

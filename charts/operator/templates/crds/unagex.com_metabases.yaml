@@ -34,14 +34,53 @@ spec:
           spec:
             description: MetabaseSpec defines the desired state of Metabase
             properties:
-              foo:
-                description: Foo is an example field of Metabase. Edit metabase_types.go
-                  to remove/update
+              db:
+                properties:
+                  image:
+                    default: postgres:latest
+                    description: The image name to use for PostgreSQL containers.
+                    type: string
+                  imagePullPolicy:
+                    default: IfNotPresent
+                    description: ImagePullPolicy is used to determine when Kubernetes
+                      will attempt to pull (download) container images.
+                    enum:
+                    - Always
+                    - Never
+                    - IfNotPresent
+                    type: string
+                  replicas:
+                    default: 1
+                    description: Number of desired PostgreSQL pods.
+                    format: int32
+                    minimum: 1
+                    type: integer
+                  volume:
+                    properties:
+                      size:
+                        description: Size of the volume.
+                        pattern: ^\d+(Ki|Mi|Gi|Ti|Pi|Ei|m|k|M|G|T|P|E)$
+                        type: string
+                      storageClassName:
+                        description: StorageClassName defined for the volume.
+                        type: string
+                    required:
+                    - size
+                    type: object
+                required:
+                - volume
+                type: object
+              test:
+                default: postgres:latest
                 type: string
+            required:
+            - db
             type: object
           status:
             description: MetabaseStatus defines the observed state of Metabase
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true

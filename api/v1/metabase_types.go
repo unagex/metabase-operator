@@ -17,19 +17,57 @@ limitations under the License.
 package v1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
-
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // MetabaseSpec defines the desired state of Metabase
 type MetabaseSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Metabase. Edit metabase_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// +kubebuilder:default="postgres:latest"
+	// +kubebuilder:validation:Optional
+	Test string `json:"test"`
+
+	// +kubebuilder:validation:Required
+	DB DBSpec `json:"db"`
+}
+
+type DBSpec struct {
+	// The image name to use for PostgreSQL containers.
+	// +kubebuilder:default="postgres:latest"
+	// +kubebuilder:validation:Optional
+	Image string `json:"image,omitempty"`
+
+	// ImagePullPolicy is used to determine when Kubernetes will attempt to
+	// pull (download) container images.
+	// +kubebuilder:validation:Enum={Always,Never,IfNotPresent}
+	// +kubebuilder:default="IfNotPresent"
+	// +kubebuilder:validation:Optional
+	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy,omitempty"`
+
+	// Number of desired PostgreSQL pods.
+	// +kubebuilder:validation:Minimum=1
+	// +kubebuilder:default=1
+	// +kubebuilder:validation:Optional
+	Replicas *int32 `json:"replicas,omitempty"`
+
+	// +kubebuilder:validation:Required
+	Volume VolumeSpec `json:"volume"`
+}
+
+type VolumeSpec struct {
+	// StorageClassName defined for the volume.
+	// +kubebuilder:validation:Optional
+	StorageClassName *string `json:"storageClassName,omitempty"`
+
+	// Size of the volume.
+	// +kubebuilder:validation:default=10Gi
+	// +kubebuilder:validation:Pattern=`^\d+(Gi|Gb|Ki|)$`
+	// +kubebuilder:validation:Pattern=`^\d+(Ki|Mi|Gi|Ti|Pi|Ei|m|k|M|G|T|P|E)$`
+	// +kubebuilder:validation:Required
+	Size string `json:"size"`
 }
 
 // MetabaseStatus defines the observed state of Metabase
@@ -46,7 +84,8 @@ type Metabase struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   MetabaseSpec   `json:"spec,omitempty"`
+	// +kubebuilder:validation:Required
+	Spec   MetabaseSpec   `json:"spec"`
 	Status MetabaseStatus `json:"status,omitempty"`
 }
 
