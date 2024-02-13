@@ -26,10 +26,6 @@ type MetabaseSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// +kubebuilder:default="postgres:latest"
-	// +kubebuilder:validation:Optional
-	Test string `json:"test"`
-
 	// +kubebuilder:validation:Required
 	DB DBSpec `json:"db"`
 }

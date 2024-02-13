@@ -70,9 +70,6 @@ spec:
                 required:
                 - volume
                 type: object
-              test:
-                default: postgres:latest
-                type: string
             required:
             - db
             type: object
