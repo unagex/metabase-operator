@@ -136,8 +136,6 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 }
 
 func (r *MetabaseReconciler) getVCTs(metabase *unagexcomv1.Metabase) []corev1.PersistentVolumeClaim {
-	r.Log.Info("the value is")
-	r.Log.Info(fmt.Sprintf("%+v", metabase.Spec))
 	vct := &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      metabase.Name + "-storage",
