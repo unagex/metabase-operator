@@ -7,14 +7,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: metabase
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/component: "operator"	
   replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: metabase
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/component: "operator"
     spec:
       serviceAccountName: {{ .Chart.Name }}
       containers:
