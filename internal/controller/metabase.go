@@ -9,6 +9,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -71,6 +72,36 @@ func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *apps
 								Requests: corev1.ResourceList{
 									corev1.ResourceMemory: resource.MustParse("2Gi"),
 									corev1.ResourceCPU:    resource.MustParse("2"),
+								},
+							},
+							StartupProbe: &corev1.Probe{
+								// 80 * 10 = 800 seconds for the pod before being restarted
+								FailureThreshold: 80,
+								ProbeHandler: corev1.ProbeHandler{
+									HTTPGet: &corev1.HTTPGetAction{
+										Path:   "/api/health",
+										Port:   intstr.FromString("http"),
+										Scheme: corev1.URISchemeHTTP,
+									},
+								},
+							},
+							LivenessProbe: &corev1.Probe{
+								FailureThreshold: 6,
+								ProbeHandler: corev1.ProbeHandler{
+									HTTPGet: &corev1.HTTPGetAction{
+										Path:   "/api/health",
+										Port:   intstr.FromString("http"),
+										Scheme: corev1.URISchemeHTTP,
+									},
+								},
+							},
+							ReadinessProbe: &corev1.Probe{
+								ProbeHandler: corev1.ProbeHandler{
+									HTTPGet: &corev1.HTTPGetAction{
+										Path:   "/api/health",
+										Port:   intstr.FromString("http"),
+										Scheme: corev1.URISchemeHTTP,
+									},
 								},
 							},
 							Ports: []corev1.ContainerPort{
