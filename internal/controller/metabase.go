@@ -63,6 +63,16 @@ func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *apps
 					Labels: ls,
 				},
 				Spec: corev1.PodSpec{
+					Volumes: []corev1.Volume{
+						{
+							Name: metabase.Name + "-secret",
+							VolumeSource: corev1.VolumeSource{
+								Secret: &corev1.SecretVolumeSource{
+									SecretName: metabase.Name + "-secret",
+								},
+							},
+						},
+					},
 					Containers: []corev1.Container{
 						{
 							Image:           metabase.Spec.Metabase.Image,
@@ -123,8 +133,15 @@ func (r *MetabaseReconciler) GetDeployment(metabase *unagexcomv1.Metabase) *apps
 									Value: "user",
 								},
 								{
-									Name:  "MB_DB_PASS",
-									Value: "password",
+									Name: "MB_DB_PASS",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{
+												Name: metabase.Name + "-secret",
+											},
+											Key: "PASSWORD",
+										},
+									},
 								},
 								{
 									Name:  "MB_DB_HOST",

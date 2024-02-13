@@ -71,6 +71,14 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 								},
 							},
 						},
+						{
+							Name: metabase.Name + "-secret",
+							VolumeSource: corev1.VolumeSource{
+								Secret: &corev1.SecretVolumeSource{
+									SecretName: metabase.Name + "-secret",
+								},
+							},
+						},
 					},
 					Containers: []corev1.Container{
 						{
@@ -109,8 +117,15 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 									Value: "user",
 								},
 								{
-									Name:  "POSTGRES_PASSWORD",
-									Value: "password",
+									Name: "POSTGRES_PASSWORD",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{
+												Name: metabase.Name + "-secret",
+											},
+											Key: "PASSWORD",
+										},
+									},
 								},
 								{
 									Name:  "POSTGRES_DB",
@@ -119,8 +134,8 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
-									MountPath: "/var/lib/postgresql/data",
 									Name:      metabase.Name + "-storage",
+									MountPath: "/var/lib/postgresql/data",
 								},
 							},
 						},

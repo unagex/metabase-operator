@@ -49,6 +49,11 @@ func (r *MetabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, fmt.Errorf("error getting metabase cr: %w", err)
 	}
 
+	err = r.ManageSecret(ctx, metabase)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
 	err = r.ManageDatabase(ctx, metabase)
 	if err != nil {
 		return ctrl.Result{}, err
