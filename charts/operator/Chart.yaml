@@ -1,0 +1,7 @@
+apiVersion: v2
+name: metabase-operator
+description: Helm chart to deploy [unagex-metabase-operator](https://github.com/unagex/metabase-operator)
+type: application
+version: 0.0.1
+appVersion: 0.0.1
+home: https://github.com/unagex/metabase-operator

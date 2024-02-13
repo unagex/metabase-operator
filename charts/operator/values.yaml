@@ -1,0 +1,6 @@
+operator:
+  image:
+    repository: ghcr.io/unagex/metabase-operator/controller
+    # tag default to .Chart.AppVersion if not set
+    tag: "test"
+    pullPolicy: IfNotPresent
