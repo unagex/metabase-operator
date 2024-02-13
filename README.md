@@ -7,6 +7,12 @@
 
 ## Features
 
+
+- Create Metabase instances defined as custom resources
+- Customize resources needed (cpu, ram) based on your need
+- Update Metabase version and config (soon)
+- Production-ready with dedicated database
+
 ## Quickstart
 1. Deploy the operator with helm
 ```
@@ -14,7 +20,7 @@ helm repo add metabase-operator-charts https://unagex.github.io/metabase-operato
 helm repo update
 helm install metabase-operator metabase-operator-charts/metabase-operator
 ```
-2. Deploy a basic metabase database
+2. Deploy a basic Metabase
 ```
 kubectl apply -f https://raw.githubusercontent.com/unagex/metabase-operator/main/config/samples/v1_metabase.yaml
 ```
