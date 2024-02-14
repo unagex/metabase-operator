@@ -42,6 +42,25 @@ func (r *MetabaseReconciler) ManageMetabase(ctx context.Context, metabase *unage
 		return fmt.Errorf("error getting deployment: %w", err)
 	}
 
+	// update status if not sync with deployment
+	// metabase dep always have one pod
+	ready := dep.Status.ReadyReplicas == 1
+	if ready != metabase.Status.Ready {
+		metabase.Status.Ready = ready
+		metabase.Status.Host = nil
+		if ready {
+			host := fmt.Sprintf("%s-http.%s.svc.cluster.local:3000", metabase.Name, metabase.Namespace)
+			metabase.Status.Host = &host
+		}
+
+		err = r.Status().Update(ctx, metabase)
+		if err != nil {
+			return fmt.Errorf("error updating metabase field status.ready: %w", err)
+		}
+
+		r.Log.Info(fmt.Sprintf("updated metabase field status.ready to %t", ready))
+	}
+
 	return nil
 }
 

@@ -97,6 +97,15 @@ type VolumeSpec struct {
 type MetabaseStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// Instance ready to accept connections.
+	// +kubebuilder:validation:default=false
+	// +kubebuilder:validation:Required
+	Ready bool `json:"ready"`
+
+	// Host to connect to the metabase.
+	// +kubebuilder:validation:Optional
+	Host *string `json:"host"`
 }
 
 //+kubebuilder:object:root=true
@@ -108,7 +117,8 @@ type Metabase struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// +kubebuilder:validation:Required
-	Spec   MetabaseSpec   `json:"spec"`
+	Spec MetabaseSpec `json:"spec"`
+
 	Status MetabaseStatus `json:"status,omitempty"`
 }
 
