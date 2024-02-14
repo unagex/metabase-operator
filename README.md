@@ -1,13 +1,10 @@
 # Unagex Kubernetes Operator for Metabase
-
 ![Go version](https://img.shields.io/github/go-mod/go-version/unagex/metabase-operator)
 ![Kubernetes Version](https://img.shields.io/badge/Kubernetes-1.18%2B-green.svg)
 ![Release](https://img.shields.io/github/v/release/unagex/metabase-operator)
 [![Go Report Card](https://goreportcard.com/badge/github.com/unagex/metabase-operator)](https://goreportcard.com/report/github.com/unagex/metabase-operator)
 
 ## Features
-
-
 - Create Metabase instances defined as custom resources
 - Production-ready with dedicated database
 - Customize resources needed (cpu, ram) by Metabase
@@ -27,7 +24,6 @@ kubectl apply -f https://raw.githubusercontent.com/unagex/metabase-operator/main
 ⬇ See documentation below for more ⬇
 
 ## Documentation
-
 * [Operator Installation](./docs/installation.md)
 * [Metabase Configuration](./docs/configuration.md)
 * [Operator Overview](./docs/overview.md)
