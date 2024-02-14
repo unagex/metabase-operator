@@ -9,9 +9,9 @@
 
 
 - Create Metabase instances defined as custom resources
-- Customize resources needed (cpu, ram) based on your need
-- Update Metabase version and config (soon)
 - Production-ready with dedicated database
+- Customize resources needed (cpu, ram) by Metabase
+- Update Metabase version and config (soon)
 
 ## Quickstart
 1. Deploy the operator with helm
