@@ -20,11 +20,16 @@ import (
 	"context"
 	"fmt"
 
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/go-logr/logr"
 	unagexcomv1 "github.com/unagex/metabase-operator/api/v1"
@@ -74,7 +79,28 @@ func (r *MetabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *MetabaseReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	// filter to requeue when a dependant resource is created/updated/deleted.
+	// secrets are the exception because we cannot recreate it with the same password.
+	filter := handler.EnqueueRequestsFromMapFunc(func(_ context.Context, o client.Object) []reconcile.Request {
+		ls := o.GetLabels()
+		if ls["app.kubernetes.io/managed-by"] != "metabase-operator" {
+			return nil
+		}
+
+		return []reconcile.Request{
+			{
+				NamespacedName: types.NamespacedName{
+					Namespace: o.GetNamespace(),
+					Name:      ls["app.kubernetes.io/instance"],
+				},
+			},
+		}
+	})
+
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&unagexcomv1.Metabase{}).
+		Watches(&appsv1.StatefulSet{}, filter).
+		Watches(&appsv1.Deployment{}, filter).
+		Watches(&corev1.Service{}, filter).
 		Complete(r)
 }
