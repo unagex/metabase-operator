@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   metabase-operator:
   - apiVersion: v2
+    appVersion: 0.0.7
+    created: "2024-02-15T13:57:26.538920716Z"
+    description: Helm chart to deploy [unagex-metabase-operator](https://github.com/unagex/metabase-operator)
+    digest: 679a972bbd4f534e73af7ee2840d392241b3120213abc29eaabc4e66672182f1
+    home: https://github.com/unagex/metabase-operator
+    name: metabase-operator
+    type: application
+    urls:
+    - https://github.com/unagex/metabase-operator/releases/download/metabase-operator-0.0.7/metabase-operator-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
     appVersion: 0.0.6
     created: "2024-02-14T19:17:43.163523471Z"
     description: Helm chart to deploy [unagex-metabase-operator](https://github.com/unagex/metabase-operator)
@@ -67,4 +78,4 @@ entries:
     urls:
     - https://github.com/unagex/metabase-operator/releases/download/metabase-operator-0.0.1/metabase-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2024-02-14T19:17:43.163547155Z"
+generated: "2024-02-15T13:57:26.538958865Z"
