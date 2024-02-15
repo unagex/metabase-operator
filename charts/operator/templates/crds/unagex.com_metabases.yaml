@@ -206,7 +206,7 @@ spec:
             description: MetabaseStatus defines the observed state of Metabase
             properties:
               host:
-                description: Host to connect to the database.
+                description: Host to connect to the metabase.
                 type: string
               ready:
                 description: Instance ready to accept connections.

@@ -136,6 +136,7 @@ func (r *MetabaseReconciler) GetStatefulSet(metabase *unagexcomv1.Metabase) *app
 								{
 									Name:      metabase.Name + "-storage",
 									MountPath: "/var/lib/postgresql/data",
+									SubPath:   "metabase",
 								},
 							},
 						},
